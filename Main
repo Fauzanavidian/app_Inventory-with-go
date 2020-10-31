@@ -1,0 +1,234 @@
+package main
+
+import "fmt"
+
+const N = 2020
+
+type Data struct {
+	jumlah, harga  int
+	nama, kategori string
+	berat          float64
+}
+type barang [N]Data
+
+func admin() {
+	var (
+		password int
+		login    string
+	)
+	loop := false
+	fmt.Println("=========WELCOMETO==========")
+	fmt.Println("==========PROGRAM==========")
+	fmt.Println("==========SEMBAKO==========")
+	for loop != true {
+		fmt.Print("login: ")
+		fmt.Scan(&login)
+		fmt.Print("Password: ")
+		fmt.Scan(&password)
+		if login == "Fauzan" && password == 123 {
+			loop = true
+			fmt.Println("SUCCESSFUL")
+		} else if login == "Yusril" && password == 234 {
+			loop = true
+			fmt.Println("SUCCESSFUL")
+		} else {
+			loop = false
+			fmt.Println("Silahkan Login Ulang!")
+		}
+	}
+
+}
+func input(tab *barang, jml *int) {
+
+	fmt.Println("=========================")
+	fmt.Print("Masukan nama barang : ")
+	fmt.Scan(&tab[*jml].nama)
+	fmt.Print("Masukan kategori barang : ")
+	fmt.Scan(&tab[*jml].kategori)
+	fmt.Print("masukan jumlah barang : ")
+	fmt.Scan(&tab[*jml].jumlah)
+	fmt.Print("Masukan berat barang (Kg): ")
+	fmt.Scan(&tab[*jml].berat)
+	fmt.Print("Masukan harga barang (Rp): ")
+	fmt.Scan(&tab[*jml].harga)
+	*jml++
+	fmt.Println("=========================")
+}
+func tampil(tab *barang, jml int) {
+	var i int
+	i = 0
+	fmt.Println("============DATA KAMI=============")
+	for i < jml {
+		fmt.Println("=========================")
+		fmt.Println("barang: ", tab[i].nama)
+		fmt.Println("Kategori: ", tab[i].kategori)
+		fmt.Println("Jumlah: ", tab[i].jumlah)
+		fmt.Println("Berat :", tab[i].berat, "kg")
+		fmt.Println("Harga : Rp.", tab[i].harga)
+		i++
+		fmt.Println("=========================")
+	}
+}
+func search(tab barang, jml int, nemu string) int {
+	var i int
+	i = 0
+	for i <= jml && tab[i].nama != nemu {
+		i++
+	}
+	if tab[i].nama == nemu {
+		return i
+	} else {
+		return -1
+	}
+}
+func edit(tab *barang, jml int) {
+	var hasil int
+	var ganti string
+	fmt.Println("siapa yang mau diedit (nama): ")
+	fmt.Scan(&ganti)
+	hasil = search(*tab, jml, ganti)
+	if hasil == -1 {
+		fmt.Println("Tidak ketemu")
+	} else {
+		fmt.Println("Masukan nama baru: ")
+		fmt.Scan(&tab[hasil].nama)
+		fmt.Println("Masukan kategori baru: ")
+		fmt.Scan(&tab[hasil].kategori)
+		fmt.Println("Masukan jumlah baru: ")
+		fmt.Scan(&tab[hasil].jumlah)
+		fmt.Println("Masukan berat(Kg) baru: ")
+		fmt.Scan(&tab[hasil].berat)
+		fmt.Println("Masukan harga (Rp) baru: ")
+		fmt.Scan(&tab[hasil].harga)
+	}
+}
+func Delete(tab *barang, jml *int) {
+	var hasil, i int
+	var ganti string
+	fmt.Println("nama barang yang mau di delete : ")
+	fmt.Scan(&ganti)
+	hasil = search(*tab, *jml, ganti)
+	if hasil == -1 {
+		fmt.Println("Tidak ketemu")
+	} else {
+		i = hasil
+		for i <= *jml {
+			tab[i] = tab[i+1]
+			i++
+		}
+		*jml--
+		fmt.Println("BERHASIL MENGHAPUS DATA ")
+	}
+
+}
+func SsortAsc(tab *barang, jml int) {
+	var (
+		pass, i, idx_min int
+		temp             Data
+	)
+	pass = 0
+	for pass <= jml-1 {
+		idx_min = pass
+		i = pass
+		for i < jml {
+			if tab[idx_min].harga > tab[i].harga {
+				idx_min = i
+			}
+			i++
+		}
+		temp = tab[idx_min]
+		tab[idx_min] = tab[pass]
+		tab[pass] = temp
+		pass++
+	}
+
+}
+func SsortDsc(tab *barang, jml int) {
+	var (
+		pass, i, idx_max int
+		temp             Data
+	)
+	pass = 0
+	for pass <= jml-1 {
+		idx_max = pass
+		i = pass
+		for i < jml {
+			if tab[idx_max].harga < tab[i].harga {
+				idx_max = i
+			}
+			i++
+		}
+		temp = tab[idx_max]
+		tab[idx_max] = tab[pass]
+		tab[pass] = temp
+		pass++
+	}
+
+}
+
+func menupilihan() {
+
+	fmt.Println("==========WELCOME TO ADMIN==========")
+	fmt.Println("1. Input barang")
+	fmt.Println("2. edit barang (nama)")
+	fmt.Println("3. cari barang (nama)")
+	fmt.Println("4. sorting barang")
+	fmt.Println("5. tampilkan barang")
+	fmt.Println("6. Delete barang ")
+	fmt.Println("7. LOGOUT")
+}
+
+func main() {
+	var (
+		jml       int
+		tab       barang
+		nemu      string
+		hasilcari int
+		nomor     int
+		ad        int
+	)
+	jml = 0
+	admin()
+	menupilihan()
+	for nomor != 7 {
+		fmt.Println("Masukan angka: ")
+		fmt.Scan(&nomor)
+		if nomor == 1 {
+			input(&tab, &jml)
+			fmt.Println(tab[jml].nama)
+			menupilihan()
+		} else if nomor == 2 {
+			edit(&tab, jml)
+			menupilihan()
+		} else if nomor == 3 {
+			fmt.Println("Masukan barang yang ingin dicari: ")
+			fmt.Scan(&nemu)
+			hasilcari = search(tab, jml, nemu)
+			if hasilcari == -1 {
+				fmt.Println("Tidak ditemukan!!")
+			} else {
+				fmt.Println("barang ditemukan pada index ke ", hasilcari)
+			}
+			menupilihan()
+		} else if nomor == 4 {
+			fmt.Println("1. Ascending")
+			fmt.Println("2. Descending")
+			fmt.Println("masukan angka : ")
+			fmt.Scan(&ad)
+			fmt.Println("=========================")
+			if ad == 1 {
+				SsortAsc(&tab, jml)
+			} else if ad == 2 {
+				SsortDsc(&tab, jml)
+			}
+			fmt.Println("Data sudah tersorting")
+			menupilihan()
+		} else if nomor == 5 {
+			tampil(&tab, jml)
+			menupilihan()
+		} else if nomor == 6 {
+			Delete(&tab, &jml)
+			menupilihan()
+		}
+	}
+}
